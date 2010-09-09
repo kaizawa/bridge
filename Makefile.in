@@ -1,0 +1,65 @@
+#
+# Makefile for brdg
+#
+# $Date: 2009/06/07 09:28:22 $, $Revision: 1.7 $
+#
+# Kazuyoshi(admin2@whiteboard.ne.jp)
+#
+CC = @CC@
+KCFLAGS = @KCFLAGS@ -D_KERNEL -D_SYSCALL32
+DRV_PATH = @DRV_PATH@
+MOD_PATH = @MOD_PATH@
+DRV_CONF_PATH = /usr/kernel/drv
+PRODUCTS = brdg brdgadm
+CFLAGS = @CFLAGS@
+LD_FLAGS = @LD_OPT@
+ECHO = /bin/echo
+CP = /bin/cp
+RM = /bin/rm
+LD = ld
+RM = /bin/rm
+CAT = /bin/cat
+INSTALL = /usr/sbin/install
+REM_DRV = /usr/sbin/rem_drv 
+ADD_DRV = /usr/sbin/add_drv 
+MODLOAD = /usr/sbin/modload
+MODUNLOAD = /usr/sbin/modunload
+
+CONFIGURE_FILES = Makefile config.status config.cache config.h config.log
+
+exec_prefix = @prefix@
+BINDIR = @bindir@
+
+all: $(PRODUCTS)
+
+clean:
+	$(RM) -f *.o brdg brdgadm
+
+brdg.o: brdg.c
+	$(CC) -c $(KCFLAGS) $< -o $@
+
+brdg: brdg.o
+	$(LD) $(LD_FLAGS) -dn -r $^ -o $@
+
+brdgadm.o: brdgadm.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+dlpiutil.o: dlpiutil.c dlpiutil.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+brdgadm: brdgadm.o dlpiutil.o 
+	$(CC) $(CFLAGS) -lsocket -lnsl $^ -o $@
+
+install: all
+	-$(INSTALL) -s -f $(MOD_PATH) -m 0755 -u root -g sys brdg
+	$(INSTALL) -s -d $(BINDIR)
+	-$(INSTALL) -s -f $(BINDIR) -m 0755 -u root brdgadm
+	$(MODLOAD) brdg 
+
+uninstall:
+	-$(MODUNLOAD)  -i `modinfo | awk '/brdg/{ print $1 }'` 
+	-$(RM) $(MOD_PATH)/brdg
+	-$(RM) $(BINDIR)/brdgadm
+
+distclean:
+	rm -f $(CONFIGURE_FILES)

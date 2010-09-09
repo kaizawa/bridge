@@ -1,0 +1,13 @@
+How to build:
+
+After extracting bridge.tar.gz file, run './configure', 'make', and 'make install'. 
+'brdg' and brdgadm will be built and installed on your system.
+Where 'brdg' is a STREAMS module which enables briging 2 interfaces. 
+And where 'brdgadm' is a configuration command to add/delete bridge interfaces.
+
+Usage:  brdgadm [ -a interface | -d interface]
+    Options:
+       -a interface   : Add interface as port
+       -d interface   : Delete interface from port list
+       -l             : List all interfaces in port list
+
