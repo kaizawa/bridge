@@ -244,8 +244,8 @@ char        *interface;     /* interface name */
         }
         continue;
     }
-    strncpy(devname, interface, i + 1);
-    
+    strlcpy(devname, interface, i + 2);
+
     sprintf(devpath, "/dev/%s",devname);
     //printf("devname = %s, ppa = %d devpath = %s \n",devname, ppa, devpath);
 
