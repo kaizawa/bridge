@@ -49,7 +49,6 @@
 #include <sys/kmem.h>
 #include <sys/dlpi.h>
 #include <sys/ethernet.h>
-
 #include <sys/modctl.h>
 #include <sys/types.h>
 #include <sys/param.h>
@@ -58,6 +57,10 @@
 #include <sys/ddi.h>
 #include <sys/sunddi.h>
 #include <sys/cmn_err.h>
+#ifdef SOL11
+#include <sys/vfs_opreg.h>
+#include <stdarg.h>
+#endif
 
 #define  MAXPORT 20   /* Max number of ports to be bridged. (Max number of NICs)*/
 #define  MAXHASH 1024 /* Max number of ethernet addresses to be registered. */
@@ -68,11 +71,10 @@ static int  brdg_close (queue_t*, int, int, cred_t*);
 static int  brdg_wput (queue_t*, mblk_t*);
 static int  brdg_rput (queue_t*, mblk_t*);
 static int  brdg_rput_data (queue_t*, mblk_t*);
-static void brdg_add_port (queue_t*, mblk_t*);
-static void brdg_remove_port (queue_t*, mblk_t*);
 static void brdg_register_node (queue_t *, mblk_t *);
+#ifdef DEBUG
 static void debug_print (int , char *, ...);
-
+#endif
 /*
  * Port structure.
  * One port structure corresponds to one NIC added by brdgadm command.
@@ -130,10 +132,10 @@ node_t node_hash_table[MAXHASH];
                     (uint8_t)ether_addr.ether_addr_octet[3],\
                     (uint8_t)ether_addr.ether_addr_octet[4],\
                     (uint8_t)ether_addr.ether_addr_octet[5])
-#define  DEBUG_PRINT(args)  debug_print args
+#define  DEBUG_PRINT(argsx)  debug_print args
 #else
-#define DEBUG_PRINT
-#define DEBUG_PRINT_ETHER
+#define DEBUG_PRINT(args)
+#define DEBUG_PRINT_ETHER(str, ether_addr)
 #endif
 
 static struct module_info minfo = {
@@ -158,13 +160,16 @@ static struct fmodsw brdg_fmodsw ={
     (D_NEW|D_MP|D_MTQPAIR|D_MTOUTPERIM|D_MTOCEXCL)
 };
 
-struct modlstrmod modlstrmod ={  
+struct modlstrmod modlstrmod = {  
   &mod_strmodops, "bridge module(v1.15)", &brdg_fmodsw
 };
 
-static struct modlinkage modlinkage =
-{
-    MODREV_1, (void *)&modlstrmod, NULL                    
+static struct modlinkage modlinkage = {
+    MODREV_1, 
+    {	
+      (void *)&modlstrmod, 
+      NULL 
+    }
 };
 
 int
@@ -278,8 +283,6 @@ static int brdg_close (queue_t *q, int flag, int sflag, cred_t *cred)
 static int
 brdg_wput(queue_t *q, mblk_t *mp)
 {
-    struct iocblk *iocp;
-
     DEBUG_PRINT((CE_CONT,"Entering brdg_wput()\n"));
     
     putnext(q, mp);
@@ -306,7 +309,6 @@ brdg_rput(queue_t *q, mblk_t *mp)
     struct     ether_header *ether;
     uchar_t    *rptr;       /* Read pointer */
     node_t     *snode;      /* node structure which is a list of senders */
-    port_t     *port;       /* port structure */
     
     switch(mp->b_datap->db_type) {
         case M_FLUSH:

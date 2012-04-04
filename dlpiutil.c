@@ -49,6 +49,10 @@
 #include <unistd.h>
 #include <stropts.h>
 #include "dlpiutil.h"
+#ifdef SOL11
+#include <sys/vfs_opreg.h>
+#include <stdarg.h>
+#endif
 
 int    dlattachreq(int, t_uscalar_t, caddr_t );
 int    dlpromisconreq(int, t_uscalar_t, caddr_t);
