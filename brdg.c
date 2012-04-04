@@ -38,7 +38,6 @@
 
 #include <netinet/in.h>
 #include <inet/common.h>
-#include <netinet/ip6.h>
 #include <inet/ip.h>
 #include <inet/tcp.h>
 #include <sys/signal.h>
