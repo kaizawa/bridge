@@ -43,11 +43,12 @@ RM = /bin/rm
 LD = ld
 RM = /bin/rm
 CAT = /bin/cat
-INSTALL = /usr/sbin/install
 REM_DRV = /usr/sbin/rem_drv 
 ADD_DRV = /usr/sbin/add_drv 
 MODLOAD = /usr/sbin/modload
 MODUNLOAD = /usr/sbin/modunload
+
+INSTALL = @INSTALL@
 
 CONFIGURE_FILES = Makefile config.status config.cache config.h config.log
 
@@ -75,9 +76,9 @@ brdgadm: brdgadm.o dlpiutil.o
 	$(CC) $(CFLAGS) -lsocket -lnsl $^ -o $@
 
 install: all
-	-$(INSTALL) -s -f $(MOD_PATH) -m 0755 -u root -g sys brdg
-	$(INSTALL) -s -d $(BINDIR)
-	-$(INSTALL) -s -f $(BINDIR) -m 0755 -u root brdgadm
+	-$(INSTALL) -m 0755 -o root -g sys brdg $(MOD_PATH)
+	$(INSTALL) -d -m 0755 -o root -g bin $(BINDIR)
+	-$(INSTALL) -m 0755 -o root -g bin brdgadm $(BINDIR)
 	$(MODLOAD) brdg 
 
 uninstall:
