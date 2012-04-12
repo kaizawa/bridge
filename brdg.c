@@ -56,9 +56,9 @@
 #include <sys/ddi.h>
 #include <sys/sunddi.h>
 #include <sys/cmn_err.h>
+#include <stdarg.h>
 #ifdef SOL11
 #include <sys/vfs_opreg.h>
-#include <stdarg.h>
 #endif
 
 #define  MAXPORT 20   /* Max number of ports to be bridged. (Max number of NICs)*/
@@ -160,7 +160,7 @@ static struct fmodsw brdg_fmodsw ={
 };
 
 struct modlstrmod modlstrmod = {  
-  &mod_strmodops, "bridge module(v1.15)", &brdg_fmodsw
+  &mod_strmodops, "bridge module ver "PACKAGE_VERSION, &brdg_fmodsw
 };
 
 static struct modlinkage modlinkage = {
@@ -207,7 +207,7 @@ _fini()
 static int
 brdg_open(queue_t* q, dev_t *devp, int oflag, int sflag, cred_t *cred)
 {
-    port_t   *port;
+    port_t *port = NULL;
     uint32_t portnum;
 
     DEBUG_PRINT((CE_CONT,"Entering brdg_open()\n"));

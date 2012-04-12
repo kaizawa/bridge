@@ -26,7 +26,7 @@ dnl
 dnl configure file for brdg
 dnl
 
-AC_INIT([brdg], [0.1.2], [admin2@whiteboard.ne.jp])
+AC_INIT([brdg], [0.1.3], [admin2@whiteboard.ne.jp])
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL

@@ -30,7 +30,9 @@
 # Kazuyoshi Aizawa <admin2@whiteboard.ne.jp>
 #
 CC = @CC@
-KCFLAGS = @KCFLAGS@ -D_KERNEL -D_SYSCALL32
+
+DEFS = @DEFS@
+KCFLAGS = $(DEFS) @KCFLAGS@ -D_SYSCALL32
 DRV_PATH = @DRV_PATH@
 MOD_PATH = @MOD_PATH@
 DRV_CONF_PATH = /usr/kernel/drv
