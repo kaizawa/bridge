@@ -49,17 +49,18 @@
 #include <unistd.h>
 #include <stropts.h>
 #include "dlpiutil.h"
+#include <stdarg.h>
 #ifdef SOL11
 #include <sys/vfs_opreg.h>
 #include <stdarg.h>
 #endif
 
-int    dlattachreq(int, t_uscalar_t, caddr_t );
-int    dlpromisconreq(int, t_uscalar_t, caddr_t);
-int    dlbindreq(int, t_uscalar_t, t_uscalar_t, uint16_t, uint16_t, t_uscalar_t, caddr_t);
+int    dlattachreq(int, ulong, caddr_t );
+int    dlpromisconreq(int, ulong, caddr_t);
+int    dlbindreq(int, ulong, ulong, uint16_t, uint16_t, ulong, caddr_t);
 void   dlprint_err(int , char *, ...);
 int    dldetachreq(int , caddr_t);
-int    dlpromiscoffreq(int, t_uscalar_t, caddr_t);
+int    dlpromiscoffreq(int, ulong, caddr_t);
 int    strioctl(int , int , int , int , char *);
 
 #ifndef ERR_MSG_MAX
@@ -73,7 +74,7 @@ int    strioctl(int , int , int , int , char *);
  * 
  *****************************************************************************/
 int
-dlattachreq(int fd, t_uscalar_t ppa ,caddr_t buf)
+dlattachreq(int fd, ulong ppa ,caddr_t buf)
 {
     union DL_primitives	 *primitive;    
     dl_attach_req_t       attachreq;
@@ -118,7 +119,7 @@ dlattachreq(int fd, t_uscalar_t ppa ,caddr_t buf)
  * 
  *****************************************************************************/
 int
-dlpromisconreq(int fd, t_uscalar_t level, caddr_t buf)
+dlpromisconreq(int fd, ulong level, caddr_t buf)
 {
     union DL_primitives	 *primitive;        
     dl_promiscon_req_t    promisconreq;
@@ -165,11 +166,11 @@ dlpromisconreq(int fd, t_uscalar_t level, caddr_t buf)
 int
 dlbindreq(
     int fd,
-    t_uscalar_t sap,
-    t_uscalar_t max_conind,
+    ulong sap,
+    ulong max_conind,
     uint16_t    service_mode,
     uint16_t    conn_mgmt,
-    t_uscalar_t xidtest_flg,
+    ulong xidtest_flg,
     caddr_t     buf
     )
 {
@@ -284,7 +285,7 @@ dldetachreq(int fd, caddr_t buf)
  * 
  *****************************************************************************/
 int
-dlpromiscoffreq(int fd, t_uscalar_t level, caddr_t buf)
+dlpromiscoffreq(int fd, ulong level, caddr_t buf)
 {
     union DL_primitives	 *primitive;        
     dl_promiscoff_req_t    promiscoffreq;

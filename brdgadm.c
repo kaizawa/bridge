@@ -53,7 +53,6 @@
 #include <netinet/tcp.h>
 #include <netinet/ip.h>
 #include <stdlib.h>
-#include <sys/varargs.h>
 #include <strings.h>
 #include <ctype.h>
 
@@ -65,11 +64,11 @@ int delete_interface(char *);
 int list_interface();
 int print_usage(char *);
 
-extern int dlattachreq(int, t_uscalar_t, caddr_t );
-extern int dlpromisconreq(int, t_uscalar_t, caddr_t);
-extern int dlbindreq(int, t_uscalar_t, t_uscalar_t, uint16_t, uint16_t, t_uscalar_t, caddr_t);
+extern int dlattachreq(int, ulong, caddr_t );
+extern int dlpromisconreq(int, ulong, caddr_t);
+extern int dlbindreq(int, ulong, ulong, uint16_t, uint16_t, ulong, caddr_t);
 extern int dldetachreq(int , caddr_t);
-extern int dlpromiscoffreq(int, t_uscalar_t, caddr_t);
+extern int dlpromiscoffreq(int, ulong, caddr_t);
 extern int strioctl(int , int , int , int , char *);
 
 int
@@ -210,7 +209,7 @@ char        *interface;     /* interface name */
     char      entry[30];
     uint32_t  ifnamelen;    /* Length of interface name */
     char      *tempchar;
-    
+
     /*
      * Check /tmp/brdg.muxid 
      */
@@ -245,7 +244,13 @@ char        *interface;     /* interface name */
         }
         continue;
     }
-    strlcpy(devname, interface, i + 2);
+
+    if( i + 1 >= 30){
+        /* Interface name is too long */
+        fprintf(stderr, "Invalid interface name\n");
+	exit(1);
+    }
+    strncpy(devname, interface, i + 1);
 
     sprintf(devpath, "/dev/%s",devname);
     //printf("devname = %s, ppa = %d devpath = %s \n",devname, ppa, devpath);
