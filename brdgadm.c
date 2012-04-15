@@ -35,24 +35,25 @@
  *   brdgadm -d interface    # Delete interface
  *
  *********************************************************************/
-#include    <netinet/in.h>
-#include    <sys/types.h>
-#include    <unistd.h>
-#include    <sys/socket.h>
-#include    <sys/stropts.h>
-#include    <errno.h>
-#include    <sys/dlpi.h>
-#include    <fcntl.h>
-#include    <stdio.h>
-#include    <sys/signal.h>
-#include    <sys/stream.h>
-#include    <string.h>
-#include    <net/if.h>
-#include    <netinet/if_ether.h>
-#include    <netinet/in_systm.h>
-#include    <netinet/tcp.h>
-#include    <netinet/ip.h>
+#include <netinet/in.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <sys/stropts.h>
+#include <errno.h>
+#include <sys/dlpi.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <sys/signal.h>
+#include <sys/stream.h>
+#include <string.h>
+#include <net/if.h>
+#include <netinet/if_ether.h>
+#include <netinet/in_systm.h>
+#include <netinet/tcp.h>
+#include <netinet/ip.h>
 #include <stdlib.h>
+#include <sys/varargs.h>
 #include <strings.h>
 #include <ctype.h>
 
