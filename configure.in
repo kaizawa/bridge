@@ -77,6 +77,7 @@ case $KARCH in
 	;;
       'sparcv9')
 	CFLAGS="$CFLAGS -m64"
+	KCFLAGS="$KCFLAGS -m64"
 	DRV_PATH="/kernel/drv/sparcv9"
 	MOD_PATH="/kernel/strmod/sparcv9"
 	if test -n "$IS_GNU_LD";
